@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>ZERO ZUCCHERI - Modalità Militare</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiWkVSTyBaVUNDSEVSSSIsInNob3J0X25hbWUiOiJaRVJPIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwMDAwMDAiLCJ0aGVtZV9jb2xvciI6IiMwMDAwMDAiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0UlRjAlOUYlOUElODAlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a0000 100%);
+            color: #ff0000;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #ff3333;
+            font-size: 0.9em;
+            font-weight: normal;
+        }
+
+        .streak-container {
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .streak-number {
+            font-size: 6em;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 30px #00ff00;
+            line-height: 1;
+            margin: 20px 0;
+        }
+
+        .streak-number.failed {
+            color: #ff0000;
+            text-shadow: 0 0 30px #ff0000;
+        }
+
+        .streak-label {
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        .start-date {
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+
+        .buttons {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn-checkin {
+            background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
+            color: #000;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .btn-checkin:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
+        }
+
+        .btn-fail {
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .btn-panic {
+            background: linear-gradient(135deg, #ff9900 0%, #ff6600 100%);
+            color: #000;
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .hall-of-shame {
+            background: rgba(255, 0, 0, 0.05);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .hall-of-shame h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .shame-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .shame-item {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .shame-date {
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        .shame-note {
+            color: #ff6666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a0000;
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 20px;
+            min-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 15px;
+        }
+
+        .panic-messages {
+            background: rgba(255, 153, 0, 0.2);
+            border: 2px solid #ff9900;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            animation: emergency 1s infinite;
+        }
+
+        @keyframes emergency {
+            0%, 100% { background: rgba(255, 153, 0, 0.2); }
+            50% { background: rgba(255, 0, 0, 0.3); }
+        }
+
+        .last-checkin {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .clear-data {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            color: #666;
+            padding: 10px;
+            font-size: 0.8em;
+            margin-top: 30px;
+        }
+
+        /* Notification permission button */
+        .notification-setup {
+            background: rgba(255, 255, 0, 0.1);
+            border: 2px solid #ffff00;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffff00;
+        }
+
+        .notification-setup button {
+            background: #ffff00;
+            color: #000;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚫 ZERO ZUCCHERI</h1>
+            <div class="subtitle">MODALITÀ MILITARE ATTIVA</div>
+        </div>
+
+        <div id="notificationSetup" class="notification-setup" style="display:none;">
+            <div>⚠️ ATTIVA NOTIFICHE AGGRESSIVE</div>
+            <button onclick="enableNotifications()">ATTIVA ALARM</button>
+        </div>
+
+        <div class="notification-setup" style="background: rgba(0, 100, 255, 0.1); border-color: #0066ff; color: #66b3ff;">
+            <div style="font-size: 1.1em; margin-bottom: 10px;">⌚ SETUP GARMIN</div>
+            <div style="font-size: 0.85em; line-height: 1.4; margin-bottom: 10px;">
+                Sul tuo Garmin imposta ALLARMI ricorrenti:<br>
+                • Ogni ora dalle 7:00 alle 22:00<br>
+                • Etichetta: "0 = ZERO"<br>
+                • Vibrazione massima<br>
+            </div>
+            <button onclick="showGarminInstructions()" style="background: #0066ff;">ISTRUZIONI DETTAGLIATE</button>
+        </div>
+
+        <div class="streak-container">
+            <div class="streak-label">GIORNI PULITI</div>
+            <div class="streak-number" id="streakNumber">0</div>
+            <div class="start-date" id="startDate">Inizia ora</div>
+            <div class="last-checkin" id="lastCheckin"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="totalFails">0</div>
+                <div class="stat-label">Sgarri Totali</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="longestStreak">0</div>
+                <div class="stat-label">Record Giorni</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-checkin" onclick="dailyCheckin()">✅ CHECK-IN GIORNALIERO</button>
+            <button class="btn-panic" onclick="showPanicMode()">🆘 PANIC BUTTON</button>
+            <button class="btn-fail" onclick="showFailModal()">💀 HO SGARTATO</button>
+        </div>
+
+        <div class="hall-of-shame">
+            <h2>⚠️ HALL OF SHAME</h2>
+            <div class="shame-list" id="shameList">
+                <div style="text-align:center; color:#666; padding:20px;">
+                    Nessuno sgarro registrato. MANTIENI LA ROTTA.
+                </div>
+            </div>
+        </div>
+
+        <button class="clear-data" onclick="clearAllData()">Reset Completo Dati</button>
+    </div>
+
+    <!-- Fail Modal -->
+    <div class="modal" id="failModal">
+        <div class="modal-content">
+            <h2>💀 SGARRO REGISTRATO</h2>
+            <p style="margin-bottom:20px; color:#ff6666;">Il counter verrà azzerato. Cosa è successo?</p>
+            <textarea id="failNote" placeholder="Descrivi cosa hai mangiato e perché..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn-fail" onclick="recordFail()">CONFERMA SGARRO</button>
+                <button style="background:#333; color:#fff;" onclick="closeModal()">ANNULLA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panic Mode Modal -->
+    <div class="modal" id="panicModal">
+        <div class="modal-content">
+            <div class="panic-messages" id="panicMessage"></div>
+            <button style="background:#00ff00; color:#000; width:100%;" onclick="closePanicMode()">SONO FORTE. RESISTO.</button>
+        </div>
+    </div>
+
+    <!-- Garmin Instructions Modal -->
+    <div class="modal" id="garminModal">
+        <div class="modal-content" style="text-align: left;">
+            <h2 style="text-align: center; margin-bottom: 20px;">⌚ SETUP GARMIN</h2>
+            
+            <div style="color: #66b3ff; line-height: 1.6;">
+                <h3 style="color: #0066ff; margin: 15px 0 10px 0;">📱 1. NOTIFICHE TELEFONO → GARMIN</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Attiva notifiche in questa app (bottone sopra)</li>
+                    <li>Il Garmin riceverà tutte le notifiche push</li>
+                    <li>Assicurati Garmin Connect sia connesso</li>
+                </ul>
+
+                <h3 style="color: #0066ff; margin: 15px 0 10px 0;">⏰ 2. ALLARMI SUL GARMIN</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Sul watch:</strong> Menu → Allarmi → Aggiungi</li>
+                    <li><strong>Orari:</strong> 07:00, 08:00, 09:00... fino alle 22:00</li>
+                    <li><strong>Ripeti:</strong> Tutti i giorni</li>
+                    <li><strong>Etichetta:</strong> "0 = ZERO"</li>
+                    <li><strong>Vibrazione:</strong> Massima</li>
+                </ul>
+
+                <h3 style="color: #0066ff; margin: 15px 0 10px 0;">🔔 3. GARMIN CONNECT APP</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Puoi impostare allarmi anche dall'app</li>
+                    <li>Vai su: Dispositivi → Il tuo watch → Allarmi</li>
+                    <li>Crea 15 allarmi (uno per ogni ora 7-22)</li>
+                </ul>
+
+                <h3 style="color: #ff9900; margin: 15px 0 10px 0;">⚡ BONUS: CALENDARIO GARMIN</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Crea evento calendario "ZERO SUGAR CHECK"</li>
+                    <li>Imposta alle 20:00 ogni giorno</li>
+                    <li>Reminder: 30 min prima</li>
+                    <li>Ti ricorda di fare il check-in nell'app</li>
+                </ul>
+            </div>
+
+            <button style="background:#0066ff; color:#fff; width:100%; margin-top: 20px;" onclick="closeGarminModal()">HO CAPITO</button>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        let data = {
+            startDate: null,
+            lastCheckin: null,
+            currentStreak: 0,
+            longestStreak: 0,
+            failures: [],
+            totalFails: 0,
+            checkins: []
+        };
+
+        // Panic messages
+        const panicMessages = [
+            "🚫 LO ZUCCHERO È VELENO.\nIL TUO CORPO NON NE HA BISOGNO.",
+            "💪 SEI PIÙ FORTE DELLA TENTAZIONE.\nQUESTO È UN TEST.",
+            "⚠️ TRA 5 MINUTI NON CI PENSERAI PIÙ.\nRESISTI ADESSO.",
+            "🎯 OGNI SECONDO CHE RESISTI\nSEI PIÙ VICINO ALLA VITTORIA.",
+            "🔥 IL PIACERE DURA 30 SECONDI.\nIL RIMPIANTO DURA PER SEMPRE.",
+            "⚡ NON ROMPERE LA CATENA.\nOGNI GIORNO CONTA.",
+            "🛡️ MODALITÀ MILITARE = ZERO COMPROMESSI.\n0 SIGNIFICA ZERO.",
+            "💀 STAI PER BUTTARE VIA TUTTO.\nVALE DAVVERO LA PENA?",
+            "🎖️ I SOLDATI NON SI ARRENDONO.\nTU SEI UN SOLDATO.",
+            "🚨 QUESTO È IL MOMENTO CHE DEFINISCE\nCHI SEI VERAMENTE."
+        ];
+
+        // Load data
+        function loadData() {
+            const stored = localStorage.getItem('zeroZuccheri');
+            if (stored) {
+                data = JSON.parse(stored);
+            }
+            updateUI();
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('zeroZuccheri', JSON.stringify(data));
+        }
+
+        // Update UI
+        function updateUI() {
+            const now = new Date();
+            
+            // Calculate current streak
+            if (data.startDate && data.lastCheckin) {
+                const start = new Date(data.startDate);
+                const last = new Date(data.lastCheckin);
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const lastDay = new Date(last.getFullYear(), last.getMonth(), last.getDate());
+                
+                const daysDiff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > 1) {
+                    // Missed checkin - streak broken
+                    data.currentStreak = 0;
+                    document.getElementById('streakNumber').classList.add('failed');
+                } else {
+                    document.getElementById('streakNumber').classList.remove('failed');
+                }
+            }
+
+            // Update display
+            document.getElementById('streakNumber').textContent = data.currentStreak;
+            document.getElementById('totalFails').textContent = data.totalFails;
+            document.getElementById('longestStreak').textContent = data.longestStreak;
+
+            if (data.startDate) {
+                const start = new Date(data.startDate);
+                document.getElementById('startDate').textContent = `Iniziato: ${start.toLocaleDateString('it-IT')}`;
+            }
+
+            if (data.lastCheckin) {
+                const last = new Date(data.lastCheckin);
+                document.getElementById('lastCheckin').textContent = `Ultimo check: ${last.toLocaleDateString('it-IT')} ${last.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`;
+            }
+
+            // Update shame list
+            updateShameList();
+
+            // Check notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                document.getElementById('notificationSetup').style.display = 'block';
+            }
+        }
+
+        // Daily checkin
+        function dailyCheckin() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            if (data.lastCheckin) {
+                const lastCheckinDate = new Date(data.lastCheckin);
+                const lastDay = new Date(lastCheckinDate.getFullYear(), lastCheckinDate.getMonth(), lastCheckinDate.getDate());
+                
+                // Check if already checked in today
+                if (today.getTime() === lastDay.getTime()) {
+                    alert('✅ Hai già fatto il check-in oggi!\nTorna domani soldato.');
+                    return;
+                }
+            }
+
+            if (!data.startDate) {
+                data.startDate = now.toISOString();
+            }
+
+            data.currentStreak++;
+            data.lastCheckin = now.toISOString();
+            data.checkins.push(now.toISOString());
+
+            if (data.currentStreak > data.longestStreak) {
+                data.longestStreak = data.currentStreak;
+            }
+
+            saveData();
+            updateUI();
+
+            // Show success message
+            showNotification('✅ CHECK-IN COMPLETATO', `Giorno ${data.currentStreak} - CONTINUA COSÌ!`);
+
+            // Victory animation
+            document.getElementById('streakNumber').style.animation = 'none';
+            setTimeout(() => {
+                document.getElementById('streakNumber').style.animation = 'pulse 0.5s';
+            }, 10);
+        }
+
+        // Show fail modal
+        function showFailModal() {
+            document.getElementById('failModal').classList.add('active');
+            document.getElementById('failNote').value = '';
+            document.getElementById('failNote').focus();
+        }
+
+        // Record failure
+        function recordFail() {
+            const note = document.getElementById('failNote').value.trim();
+            
+            if (!note) {
+                alert('Descrivi cosa è successo. ACCOUNTABILITY TOTALE.');
+                return;
+            }
+
+            const failure = {
+                date: new Date().toISOString(),
+                streakBroken: data.currentStreak,
+                note: note
+            };
+
+            data.failures.push(failure);
+            data.totalFails++;
+            data.currentStreak = 0;
+            data.startDate = new Date().toISOString();
+            data.lastCheckin = null;
+
+            saveData();
+            updateUI();
+            closeModal();
+
+            showNotification('💀 SGARRO REGISTRATO', `Streak perso: ${failure.streakBroken} giorni. RICOMINCIA.`);
+        }
+
+        // Update shame list
+        function updateShameList() {
+            const list = document.getElementById('shameList');
+            
+            if (data.failures.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Nessuno sgarro registrato. MANTIENI LA ROTTA.</div>';
+                return;
+            }
+
+            list.innerHTML = data.failures.slice().reverse().map(fail => {
+                const date = new Date(fail.date);
+                return `
+                    <div class="shame-item">
+                        <div class="shame-date">
+                            💀 ${date.toLocaleDateString('it-IT')} - Persi ${fail.streakBroken} giorni
+                        </div>
+                        <div class="shame-note">${fail.note}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show panic mode
+        function showPanicMode() {
+            const randomMessage = panicMessages[Math.floor(Math.random() * panicMessages.length)];
+            document.getElementById('panicMessage').textContent = randomMessage;
+            document.getElementById('panicModal').classList.add('active');
+
+            // Send urgent notification
+            showNotification('🆘 PANIC MODE', randomMessage);
+        }
+
+        // Close modals
+        function closeModal() {
+            document.getElementById('failModal').classList.remove('active');
+        }
+
+        function closePanicMode() {
+            document.getElementById('panicModal').classList.remove('active');
+        }
+
+        function showGarminInstructions() {
+            document.getElementById('garminModal').classList.add('active');
+        }
+
+        function closeGarminModal() {
+            document.getElementById('garminModal').classList.remove('active');
+        }
+
+        // Enable notifications
+        function enableNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        document.getElementById('notificationSetup').style.display = 'none';
+                        showNotification('✅ NOTIFICHE ATTIVE', 'Riceverai reminder durante il giorno');
+                        scheduleNotifications();
+                    }
+                });
+            }
+        }
+
+        // Show notification
+        function showNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🚫</text></svg>',
+                    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🚫</text></svg>'
+                });
+            }
+        }
+
+        // Schedule daily notifications
+        function scheduleNotifications() {
+            // AGGRESSIVE MODE: ogni ora dalle 7 alle 22
+            const aggressiveMessages = [
+                '⚠️ 0 = ZERO ZUCCHERI',
+                '🎯 MANTIENI IL FOCUS',
+                '💪 RESISTI. SEI FORTE.',
+                '🚫 NIENTE ZUCCHERO OGGI',
+                '⚡ MODALITÀ MILITARE ATTIVA',
+                '🔥 NON MOLLARE ADESSO',
+                '💀 OGNI SGARRO TI INDEBOLISCE',
+                '🛡️ DIFENDI LA TUA STREAK',
+                '⚔️ IL NEMICO È LO ZUCCHERO',
+                '🎖️ SOLDATO, MANTIENI LA POSIZIONE'
+            ];
+
+            // Check ogni 30 minuti per reminder
+            setInterval(() => {
+                const now = new Date();
+                const hour = now.getHours();
+                const minute = now.getMinutes();
+                
+                // Notifica ogni ora dalle 7 alle 22
+                if (hour >= 7 && hour <= 22 && minute === 0) {
+                    const msg = aggressiveMessages[Math.floor(Math.random() * aggressiveMessages.length)];
+                    showNotification('🚨 ZERO SUGAR', msg);
+                }
+
+                // Notifica extra ai pasti (momenti critici)
+                if ((hour === 12 && minute === 0) || (hour === 15 && minute === 0) || (hour === 19 && minute === 0)) {
+                    showNotification('⚠️ MOMENTO CRITICO', 'MASSIMA ATTENZIONE. NO ZUCCHERI.');
+                }
+            }, 60000 * 30); // Check ogni 30 minuti
+
+            // Background check: se passa troppo tempo senza check-in
+            setInterval(() => {
+                if (data.lastCheckin) {
+                    const now = new Date();
+                    const last = new Date(data.lastCheckin);
+                    const hoursSinceCheckin = (now - last) / (1000 * 60 * 60);
+                    
+                    if (hoursSinceCheckin > 24 && now.getHours() === 20) {
+                        showNotification('🚨 ALLARME ROSSO', 'NON HAI FATTO CHECK-IN! LA STREAK È A RISCHIO!');
+                    }
+                }
+            }, 60000 * 60); // Check ogni ora
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('⚠️ CANCELLARE TUTTI I DATI?\nQuesta azione è irreversibile.')) {
+                if (confirm('SEI SICURO? Perderai tutto lo storico.')) {
+                    localStorage.removeItem('zeroZuccheri');
+                    data = {
+                        startDate: null,
+                        lastCheckin: null,
+                        currentStreak: 0,
+                        longestStreak: 0,
+                        failures: [],
+                        totalFails: 0,
+                        checkins: []
+                    };
+                    updateUI();
+                    alert('✅ Dati cancellati. Ricomincia da zero.');
+                }
+            }
+        }
+
+        // Initialize
+        loadData();
+
+        // Check if should auto-checkin at startup
+        if (data.lastCheckin) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const lastCheckin = new Date(data.lastCheckin);
+            const lastDay = new Date(lastCheckin.getFullYear(), lastCheckin.getMonth(), lastCheckin.getDate());
+            const daysSinceCheckin = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
+            
+            if (daysSinceCheckin > 1) {
+                alert(`⚠️ NON HAI FATTO CHECK-IN PER ${daysSinceCheckin} GIORNI!\nStreak automaticamente azzerato.`);
+                data.currentStreak = 0;
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Request notification permission on first interaction
+        document.body.addEventListener('click', function requestNotif() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                enableNotifications();
+            }
+            document.body.removeEventListener('click', requestNotif);
+        }, { once: true });
+    </script>
+</body>
+</html>
